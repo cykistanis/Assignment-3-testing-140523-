@@ -1,12 +1,14 @@
 const express = require("express");
 const router = express.Router();
+// import in the CheckIfAuthenticated middleware
+const { checkIfAuthenticated } = require('../middlewares');
 
 
 // #1 import in the Poster model
 const { Poster, MediaProperty, Tag } = require('../models')
 const { bootstrapField, createPosterForm } = require('../forms');
 
-router.get('/', async (req, res) => {
+router.get('/', checkIfAuthenticated, async (req, res) => {
     // #2 - fetch all the posters (ie, SELECT * from posters)
     
 
@@ -18,7 +20,7 @@ router.get('/', async (req, res) => {
     })
 })
 
-router.get('/create', async (req, res) => {
+router.get('/create', checkIfAuthenticated, async (req, res) => {
    
     const allMediaProperties = await MediaProperty.fetchAll().map((mediaProperty) => {
         return [mediaProperty.get('id'), mediaProperty.get('name')];
@@ -32,7 +34,7 @@ router.get('/create', async (req, res) => {
     })
 })
 
-router.post('/create', async (req, res) => {
+router.post('/create', checkIfAuthenticated, async (req, res) => {
     const allMediaProperties = await MediaProperty.fetchAll().map((mediaProperty) => {
         return [mediaProperty.get('id'), mediaProperty.get('name')];
     })
